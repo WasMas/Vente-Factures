@@ -19,10 +19,10 @@ typedef struct
 
 int main()
 {
-  /* FileStream for the Library File */
+
   FILE *csvFile = fopen("/home/wasmas/Coding/Vente Factures/Other/VentesParapharmaceutiques.csv", "r");
   VentesPara ventes[255];
-  /* allocation of the buffer for every line in the File */
+
   char *buf = malloc(255);
   char *tmp;
   fgets(buf, 255, csvFile) != NULL;
@@ -40,11 +40,11 @@ int main()
 
     tmp = strtok(NULL, ",");
     ventes[i].montant = tmp;
-    // tempBook.ID = atoi(buf);
+
     printf("index i= %i  ID: %i,codeClient: %i,montant: %s\n", i, ventes[i].codeClient, ventes[i].idFacture, ventes[i].montant);
     i++;
   }
-  // free(buf);
+
   fclose(csvFile);
   return 0;
 }
