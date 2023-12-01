@@ -14,7 +14,7 @@ int main()
   // Configure l'adresse et le port sur lequel le socket écoutera
   struct sockaddr_in server_address;
   server_address.sin_family = AF_INET;
-  server_address.sin_port = htons(9001); // Choose Port not used
+  server_address.sin_port = htons(9001);       // Choose Port not used
   server_address.sin_addr.s_addr = INADDR_ANY; // Use our LocalMachine Address
 
   // Envoie d'un message au serveur
@@ -30,7 +30,7 @@ int main()
   recvfrom(client_socket, response_serveur, sizeof(response_serveur), 0, (struct sockaddr *)&server_address, &server_address_length);
   printf("Serveur: %s\n", response_serveur);
 
-  //Close Socket
+  // Close Socket
   close(client_socket);
 
   return 0;

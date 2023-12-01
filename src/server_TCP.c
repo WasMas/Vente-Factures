@@ -28,7 +28,7 @@ int main()
   int client_socket;
   client_socket = accept(server_socket, NULL, NULL);
 
-  //Receive Client Message
+  // Receive Client Message
   char client_response[254];
   recv(client_socket, &client_response, sizeof(client_response), 0);
 

@@ -18,7 +18,7 @@ int main()
   server_address.sin_addr.s_addr = INADDR_ANY; // Use our LocalMachine Address
 
   // Connecting to server Socket
-  connect(client_socket, (struct sockaddr*)&server_address, sizeof(server_address));
+  connect(client_socket, (struct sockaddr *)&server_address, sizeof(server_address));
 
   // Envoie d'un message au serveur
   char message_serveur[254] = "Hello, serveur TCP!";
