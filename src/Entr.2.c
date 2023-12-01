@@ -1,18 +1,20 @@
 #include <stdio.h>
 #include <sqlite3.h> 
 
+typedef struct
+{
+  int idFacture;
+  int codeClient;
+  char *montant;
+} VentesVoitures;
+
 int main(int argc, char* argv[]) {
    sqlite3 *db;
-   char *zErrMsg = 0;
    int rc;
-
+   char *sql;
+   char *ErrMsg = 0;
    rc = sqlite3_open("../sockets.db", &db);
-
-   if( rc ) {
-      fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
-      return(0);
-   } else {
-      fprintf(stderr, "Opened database successfully\n");
-   }
-   sqlite3_close(db);
+   sql="SELECT * FROM ventesVoitures";
+   rc = sqlite3_exec(db, sql, qsd, 0, &ErrMsg);
+sqlite3_close(db);
 }
