@@ -39,7 +39,7 @@ int main()
     ventes[i].idFacture = atoi(tmp);
 
     tmp = strtok(NULL, ",");
-    strcpy(ventes[i].montant, tmp);
+    strcpy(ventes[i].montant,tmp);
 
     printf("index i= %i  ID: %i,codeClient: %i,montant: %s\n", i, ventes[i].codeClient, ventes[i].idFacture, ventes[i].montant);
     i++;

@@ -9,8 +9,7 @@ typedef struct
   char montant[255];
 } VentesVoitures;
 
-int main(int argc, char *argv[])
-
+int main()
 {
   // Opening DataBase
   sqlite3 *db;
