@@ -13,16 +13,16 @@ typedef struct
 
 int main()
 {
-    struct sockaddr_in proxy_address;
+    struct sockaddr_in proxy_address_tcp;
     int proxy_socket = 0;
     VentesVoitures ventes[255];
 
 proxy_socket = socket(AF_INET, SOCK_STREAM, 0);
 
-proxy_address.sin_family = AF_INET;
-proxy_address.sin_port = htons(9002);
+proxy_address_tcp.sin_family = AF_INET;
+proxy_address_tcp.sin_port = htons(9002);
 
-connect(proxy_socket, (struct sockaddr *)&proxy_address, sizeof(proxy_address));
+connect(proxy_socket, (struct sockaddr *)&proxy_address_tcp, sizeof(proxy_address_tcp));
 
 // Receiving the array of structs
 recv(proxy_socket, ventes, sizeof(ventes), 0);
