@@ -8,7 +8,6 @@
 
 #include <netinet/in.h>
 
-
 #define MAXCHAR 1000
 
 typedef struct
