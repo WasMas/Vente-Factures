@@ -50,17 +50,17 @@ int main()
   // ? Socket Stuff
 
   int Entr1_socket;
-  struct sockaddr_in serverAddr;
+  struct sockaddr_in address;
 
   // Creating socket
   Entr1_socket = socket(AF_INET, SOCK_DGRAM, 0);
-  serverAddr.sin_family = AF_INET;
-  serverAddr.sin_port = htons(9001);
-  serverAddr.sin_addr.s_addr = INADDR_ANY;
+  address.sin_family = AF_INET;
+  address.sin_port = htons(9001);
+  address.sin_addr.s_addr = INADDR_ANY;
 
   // Sending Socket
   sendto(Entr1_socket, ventes, sizeof(ventes), MSG_CONFIRM,
-         (const struct sockaddr *)&serverAddr, sizeof(serverAddr));
+         (const struct sockaddr *)&address, sizeof(address));
   printf("Data sent.\n");
 
   close(Entr1_socket);

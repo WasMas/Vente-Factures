@@ -49,7 +49,6 @@ int main()
   // Seding Struct To Proxy server using TCP
   int Entr2_socket, new_socket;
   struct sockaddr_in address;
-  int opt = 1;
   int addrlen = sizeof(address);
 
   // Creating socket
