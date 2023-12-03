@@ -4,70 +4,42 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
-#define PORT 8888
-#define MAX_SIZE 1024
-#define ARRAY_SIZE 3 // Change the array size as needed
-
-struct MyStruct {
-    int id;
-    float value;
-    char message[256];
-};
-
 typedef struct
 {
   int idFacture;
   int codeClient;
-  char montant[255];
+  char montant[256];
 } VentesPara;
 
-int main() {
-    int sockfd;
-    struct sockaddr_in serverAddr, clientAddr;
-    struct MyStruct receivedStruct[ARRAY_SIZE];
-    VentesPara ventes[255];
+int main()
+{
+  int proxy_socket, len;
+  struct sockaddr_in serverAddr, clientAddr;
+  VentesPara ventes[256];
 
+  // Creating socket
+  proxy_socket = socket(AF_INET, SOCK_DGRAM, 0);
+  serverAddr.sin_family = AF_INET;
+  serverAddr.sin_addr.s_addr = INADDR_ANY;
+  serverAddr.sin_port = htons(9001);
 
-    // Creating socket file descriptor
-    if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
-        perror("socket creation failed");
-        exit(EXIT_FAILURE);
-    }
+  // Binding the socket
+  bind(proxy_socket, (const struct sockaddr *)&serverAddr, sizeof(serverAddr));
+  printf("Server listening on port %d...\n", 9001);
 
-    memset(&serverAddr, 0, sizeof(serverAddr));
-    memset(&clientAddr, 0, sizeof(clientAddr));
+  len = sizeof(clientAddr);
+  recvfrom(proxy_socket, ventes, sizeof(ventes),
+           MSG_WAITALL, (struct sockaddr *)&clientAddr, &len);
 
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    serverAddr.sin_port = htons(PORT);
+  printf("Received array of structs from client:\n");
 
-    // Bind the socket with the server address
-    if (bind(sockfd, (const struct sockaddr *)&serverAddr, sizeof(serverAddr)) == -1) {
-        perror("bind failed");
-        exit(EXIT_FAILURE);
-    }
+  // Processing received data (Here you can perform any operations with the received structures)
+  for (int i = 0; i < 3; i++)
+  {
+    printf("ID: %i, Value: %i, Message: %s\n",
+           ventes[i].codeClient, ventes[i].idFacture, ventes[i].montant);
+  }
 
-    printf("Server listening on port %d...\n", PORT);
-
-    int len, n;
-    len = sizeof(clientAddr);
-    while (1) {
-        n = recvfrom(sockfd, (struct VentesPara *)&ventes, sizeof(receivedStruct), 
-                     MSG_WAITALL, (struct sockaddr *)&clientAddr, &len);
-
-        printf("Received array of structs from client:\n");
-
-        // Processing received data (Here you can perform any operations with the received structures)
-        for (int i = 0; i < 3; i++) {
-            printf("ID: %i, Value: %i, Message: %s\n",
-                   ventes[i].codeClient, ventes[i].idFacture, ventes[i].montant);
-        }
-
-        // Sending acknowledgment
-        sendto(sockfd, "ACK", strlen("ACK"), MSG_CONFIRM,
-               (const struct sockaddr *)&clientAddr, len);
-    }
-
-    close(sockfd);
-    return 0;
+  close(proxy_socket);
+  return 0;
 }
