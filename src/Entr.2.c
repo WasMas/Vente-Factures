@@ -4,7 +4,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
-
+#include <unistd.h>
 #include <netinet/in.h>
 
 typedef struct
@@ -47,9 +47,8 @@ int main()
 
   // ? Socket Stuff
   // Seding Struct To Proxy server using TCP
-  int Entr2_socket, new_socket;
+  int Entr2_socket;
   struct sockaddr_in address;
-  int addrlen = sizeof(address);
 
   // Creating socket
   Entr2_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -59,16 +58,11 @@ int main()
   address.sin_addr.s_addr = INADDR_ANY;
   address.sin_port = htons(9002);
 
-  // Attaching socket to port
-  bind(Entr2_socket, (struct sockaddr *)&address, sizeof(address));
-
-  // Listening To connection
-  listen(Entr2_socket, 5);
-
-  new_socket = accept(Entr2_socket, (struct sockaddr *)&address, (socklen_t *)&addrlen);
+  connect(Entr2_socket, (struct sockaddr *)&address, sizeof(address));
 
   // Sending the struct
-  send(new_socket, ventes, sizeof(ventes), 0);
+  send(Entr2_socket, ventes, sizeof(ventes), 0);
   printf("Entr.2: Array of structs sent\n");
+  close(Entr2_socket);
   return 0;
 }
