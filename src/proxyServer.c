@@ -14,11 +14,11 @@ typedef struct
 int main()
 {
     struct sockaddr_in proxy_address_tcp;
-    int proxy_socket = 0;
+    int proxy_socket;
     VentesVoitures ventes[255];
 
     proxy_socket = socket(AF_INET, SOCK_STREAM, 0);
-
+    proxy_address_tcp.sin_addr.s_addr = INADDR_ANY;
     proxy_address_tcp.sin_family = AF_INET;
     proxy_address_tcp.sin_port = htons(9002);
 
