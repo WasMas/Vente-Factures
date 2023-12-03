@@ -28,18 +28,20 @@ int main()
   printf("Server listening on port %d...\n", 9001);
 
   len = sizeof(clientAddr);
-  recvfrom(proxy_socket_UDP, ventes, sizeof(ventes),
-           MSG_WAITALL, (struct sockaddr *)&clientAddr, &len);
-
-  printf("Received array of structs from client:\n");
-
-  // Processing received data (Here you can perform any operations with the received structures)
-  for (int i = 0; i < 3; i++)
+  while (1)
   {
-    printf("ID: %i, Value: %i, Message: %s\n",
-           ventes[i].codeClient, ventes[i].idFacture, ventes[i].montant);
-  }
+    recvfrom(proxy_socket_UDP, ventes, sizeof(ventes),
+             MSG_WAITALL, (struct sockaddr *)&clientAddr, &len);
 
+
+    printf("\n");
+    // Processing received data (Here you can perform any operations with the received structures)
+    for (int i = 0; i < 3; i++)
+    {
+      printf("ID: %i, Value: %i, Message: %s\n",
+             ventes[i].codeClient, ventes[i].idFacture, ventes[i].montant);
+    }
+  }
   close(proxy_socket_UDP);
   return 0;
 }

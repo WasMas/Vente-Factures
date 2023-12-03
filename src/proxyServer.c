@@ -26,18 +26,19 @@ int main()
 
     // Attaching socket to port
     bind(proxy_socket, (struct sockaddr *)&proxy_address_tcp, sizeof(proxy_address_tcp));
-
-    // Listening To connection
-    listen(proxy_socket, 5);
-
-    new_socket = accept(proxy_socket, (struct sockaddr *)&proxy_address_tcp, (socklen_t *)&addrlen);
-    // Receiving the array of structs
-    recv(new_socket, ventes, sizeof(ventes), 0);
-
-    printf("Received array of structs From Entr.2:\n");
-    for (int i = 0; i < 3; ++i)
+    while (1)
     {
-        printf("id %i facture: %i, montant: %s,", ventes[i].idFacture, ventes[i].idFacture, ventes[i].montant);
+        // Listening To connection
+        listen(proxy_socket, 5);
+
+        new_socket = accept(proxy_socket, (struct sockaddr *)&proxy_address_tcp, (socklen_t *)&addrlen);
+        // Receiving the array of structs
+        recv(new_socket, ventes, sizeof(ventes), 0);
+        for (int i = 0; i < 3; ++i)
+        {
+            printf("id %i facture: %i, montant: %s,", ventes[i].idFacture, ventes[i].idFacture, ventes[i].montant);
+        }
+        printf("\n");
     }
     close(proxy_socket);
     close(new_socket);
