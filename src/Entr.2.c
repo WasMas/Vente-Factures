@@ -45,7 +45,7 @@ int main()
   sqlite3_finalize(statement);
   sqlite3_close(db);
 
-// ? Socket Stuff
+  // ? Socket Stuff
   // Seding Struct To Proxy server using TCP
   int Entr2_socket, new_socket;
   struct sockaddr_in address;
@@ -60,9 +60,9 @@ int main()
   address.sin_addr.s_addr = INADDR_ANY;
   address.sin_port = htons(9002);
 
-  // Attaching socket to port 
+  // Attaching socket to port
   bind(Entr2_socket, (struct sockaddr *)&address, sizeof(address));
-  
+
   // Listening To connection
   listen(Entr2_socket, 5);
 
