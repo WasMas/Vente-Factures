@@ -1,0 +1,1 @@
+  VentesPara ventes[255];
