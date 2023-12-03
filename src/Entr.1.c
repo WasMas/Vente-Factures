@@ -47,7 +47,7 @@ int main()
   }
   fclose(csvFile);
 
-  // ! WIP
+  // ? Socket Stuff
 
   int Entr1_socket;
   struct sockaddr_in serverAddr;

@@ -13,22 +13,22 @@ typedef struct
 
 int main()
 {
-  int proxy_socket, len;
-  struct sockaddr_in serverAddr, clientAddr;
+  int proxy_socket_UDP, len;
+  struct sockaddr_in serverAddr_UDP, clientAddr;
   VentesPara ventes[256];
 
   // Creating socket
-  proxy_socket = socket(AF_INET, SOCK_DGRAM, 0);
-  serverAddr.sin_family = AF_INET;
-  serverAddr.sin_addr.s_addr = INADDR_ANY;
-  serverAddr.sin_port = htons(9001);
+  proxy_socket_UDP = socket(AF_INET, SOCK_DGRAM, 0);
+  serverAddr_UDP.sin_family = AF_INET;
+  serverAddr_UDP.sin_addr.s_addr = INADDR_ANY;
+  serverAddr_UDP.sin_port = htons(9001);
 
   // Binding the socket
-  bind(proxy_socket, (const struct sockaddr *)&serverAddr, sizeof(serverAddr));
+  bind(proxy_socket_UDP, (const struct sockaddr *)&serverAddr_UDP, sizeof(serverAddr_UDP));
   printf("Server listening on port %d...\n", 9001);
 
   len = sizeof(clientAddr);
-  recvfrom(proxy_socket, ventes, sizeof(ventes),
+  recvfrom(proxy_socket_UDP, ventes, sizeof(ventes),
            MSG_WAITALL, (struct sockaddr *)&clientAddr, &len);
 
   printf("Received array of structs from client:\n");
@@ -40,6 +40,6 @@ int main()
            ventes[i].codeClient, ventes[i].idFacture, ventes[i].montant);
   }
 
-  close(proxy_socket);
+  close(proxy_socket_UDP);
   return 0;
 }
