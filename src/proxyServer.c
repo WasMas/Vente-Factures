@@ -15,7 +15,7 @@ typedef struct
     char montant[255];
 } Ventes;
 
-void *Entr1Config(void *arg)
+void Entr1Config()
 {
     int proxy_socket_UDP, len;
     struct sockaddr_in serverAddr_UDP, clientAddr;
@@ -45,10 +45,9 @@ void *Entr1Config(void *arg)
         }
     }
     close(proxy_socket_UDP);
-    return NULL;
 }
 
-void *Entr2Config(void *arg)
+void Entr2Config()
 {
     struct sockaddr_in proxy_address_tcp;
     int proxy_socket;
@@ -75,20 +74,51 @@ void *Entr2Config(void *arg)
     printf("\n");
 
     close(proxy_socket);
-    return NULL;
+}
+
+int clientChoice()
+{
+    int server_fd, new_socket;
+    struct sockaddr_in address;
+    int addrlen = sizeof(address);
+    int num;
+
+    // Creating socket file descriptor
+    server_fd = socket(AF_INET, SOCK_STREAM, 0);
+
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = INADDR_ANY;
+    address.sin_port = htons(9000);
+
+    // Binding the socket to the port
+    bind(server_fd, (struct sockaddr *)&address, sizeof(address));
+
+    // Listening for incoming connections
+    listen(server_fd, 3);
+
+    // Accepting incoming connection
+    new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t *)&addrlen);
+
+    // Receiving the integer from client
+    recv(new_socket, &num, sizeof(num), 0);
+
+    printf("Integer received from client: %d\n", num);
+
+    close(new_socket);
+    close(server_fd);
+    return num;
 }
 
 int main()
 {
-    pthread_t entr1Thread, entr2Thread;
-
-    // Creating threads for handling ENTR1 and ENTR2 connections
-    pthread_create(&entr1Thread, NULL, Entr1Config, NULL);
-    pthread_create(&entr2Thread, NULL, Entr2Config, NULL);
-
-    // Waiting for threads to finish
-    pthread_join(entr1Thread, NULL);
-    pthread_join(entr2Thread, NULL);
-
+    int choice = clientChoice();
+    if (choice == 1)
+    {
+        Entr1Config();
+    }
+    else
+    {
+        Entr2Config();
+    }
     return 0;
 }
