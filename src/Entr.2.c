@@ -37,8 +37,8 @@ int main()
   for (int i = 0; i < rowCount; i++)
   {
     rc = sqlite3_step(statement);
-    ventes[i].codeClient = sqlite3_column_int(statement, 0);
-    ventes[i].idFacture = sqlite3_column_int(statement, 1);
+    ventes[i].idFacture = sqlite3_column_int(statement, 0);
+    ventes[i].codeClient = sqlite3_column_int(statement, 1);
     strcpy(ventes[i].montant, sqlite3_column_text(statement, 2));
   }
 

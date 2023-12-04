@@ -40,8 +40,7 @@ void Entr1Config()
         // Processing received data (Here you can perform any operations with the received structures)
         for (int i = 0; i < 3; i++)
         {
-            printf("ID: %i, Value: %i, Message: %s\n",
-                   ventesPara[i].codeClient, ventesPara[i].idFacture, ventesPara[i].montant);
+            printf("id: %i, code client: %i, montant: %s\n", ventesPara[i].idFacture, ventesPara[i].codeClient, ventesPara[i].montant);
         }
     }
     close(proxy_socket_UDP);
@@ -69,7 +68,7 @@ void Entr2Config()
     printf("Entr2 Sent Stuff:\n");
     for (int i = 0; i < 3; ++i)
     {
-        printf("id %i facture: %i, montant: %s,", ventesVoitures[i].idFacture, ventesVoitures[i].idFacture, ventesVoitures[i].montant);
+        printf("id: %i, code client: %i, montant: %s\n", ventesVoitures[i].idFacture, ventesVoitures[i].codeClient, ventesVoitures[i].montant);
     }
     printf("\n");
 
