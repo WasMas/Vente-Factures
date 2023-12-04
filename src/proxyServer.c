@@ -13,20 +13,13 @@ typedef struct
     int idFacture;
     int codeClient;
     char montant[255];
-} VentesVoitures;
-
-typedef struct
-{
-    int idFacture;
-    int codeClient;
-    char montant[256];
-} VentesPara;
+} Ventes;
 
 void *Entr1Config(void *arg)
 {
     int proxy_socket_UDP, len;
     struct sockaddr_in serverAddr_UDP, clientAddr;
-    VentesPara ventes[256];
+    Ventes ventesPara[256];
 
     // Creating socket
     proxy_socket_UDP = socket(AF_INET, SOCK_DGRAM, 0);
@@ -40,7 +33,7 @@ void *Entr1Config(void *arg)
     len = sizeof(clientAddr);
     while (1)
     {
-        recvfrom(proxy_socket_UDP, ventes, sizeof(ventes),
+        recvfrom(proxy_socket_UDP, ventesPara, sizeof(ventesPara),
                  MSG_WAITALL, (struct sockaddr *)&clientAddr, &len);
 
         printf("Entr1 Sent Stuff:\n");
@@ -48,7 +41,7 @@ void *Entr1Config(void *arg)
         for (int i = 0; i < 3; i++)
         {
             printf("ID: %i, Value: %i, Message: %s\n",
-                   ventes[i].codeClient, ventes[i].idFacture, ventes[i].montant);
+                   ventesPara[i].codeClient, ventesPara[i].idFacture, ventesPara[i].montant);
         }
     }
     close(proxy_socket_UDP);
@@ -60,7 +53,7 @@ void *Entr2Config(void *arg)
     struct sockaddr_in proxy_address_tcp;
     int proxy_socket, new_socket;
 
-    VentesVoitures ventes[255];
+    Ventes ventesVoitures[255];
 
     proxy_socket = socket(AF_INET, SOCK_STREAM, 0);
     proxy_address_tcp.sin_addr.s_addr = INADDR_ANY;
@@ -77,11 +70,11 @@ void *Entr2Config(void *arg)
 
         new_socket = accept(proxy_socket, (struct sockaddr *)&proxy_address_tcp, (socklen_t *)&addrlen);
         // Receiving the array of structs
-        recv(new_socket, ventes, sizeof(ventes), 0);
+        recv(new_socket, ventesVoitures, sizeof(ventesVoitures), 0);
         printf("Entr2 Sent Stuff:\n");
         for (int i = 0; i < 3; ++i)
         {
-            printf("id %i facture: %i, montant: %s,", ventes[i].idFacture, ventes[i].idFacture, ventes[i].montant);
+            printf("id %i facture: %i, montant: %s,", ventesVoitures[i].idFacture, ventesVoitures[i].idFacture, ventesVoitures[i].montant);
         }
         printf("\n");
     }
