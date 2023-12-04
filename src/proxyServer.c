@@ -75,35 +75,35 @@ void Entr2Config()
 
 int clientChoice()
 {
-    int server_fd, new_socket;
+    int client_socket, new_socket;
     struct sockaddr_in address;
     int addrlen = sizeof(address);
-    int num;
+    int choice;
 
     // Creating socket file descriptor
-    server_fd = socket(AF_INET, SOCK_STREAM, 0);
+    client_socket = socket(AF_INET, SOCK_STREAM, 0);
 
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(9000);
 
     // Binding the socket to the port
-    bind(server_fd, (struct sockaddr *)&address, sizeof(address));
+    bind(client_socket, (struct sockaddr *)&address, sizeof(address));
 
     // Listening for incoming connections
-    listen(server_fd, 3);
+    listen(client_socket, 3);
 
     // Accepting incoming connection
-    new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t *)&addrlen);
+    new_socket = accept(client_socket, (struct sockaddr *)&address, (socklen_t *)&addrlen);
 
     // Receiving the integer from client
-    recv(new_socket, &num, sizeof(num), 0);
+    recv(new_socket, &choice, sizeof(choice), 0);
 
-    printf("Integer received from client: %d\n", num);
+    printf("Integer received from client: %d\n", choice);
 
     close(new_socket);
-    close(server_fd);
-    return num;
+    close(client_socket);
+    return choice;
 }
 
 int main()
