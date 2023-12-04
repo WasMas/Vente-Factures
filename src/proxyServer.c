@@ -14,12 +14,12 @@ typedef struct
     int codeClient;
     char montant[255];
 } Ventes;
-
+Ventes ventesPara[256];
+Ventes ventesVoitures[255];
 void Entr1Config()
 {
     int proxy_socket_UDP, len;
     struct sockaddr_in serverAddr_UDP, clientAddr;
-    Ventes ventesPara[256];
 
     // Creating socket
     proxy_socket_UDP = socket(AF_INET, SOCK_DGRAM, 0);
@@ -50,8 +50,6 @@ void Entr2Config()
 {
     struct sockaddr_in proxy_address_tcp;
     int proxy_socket;
-
-    Ventes ventesVoitures[255];
 
     proxy_socket = socket(AF_INET, SOCK_STREAM, 0);
     proxy_address_tcp.sin_addr.s_addr = INADDR_ANY;
