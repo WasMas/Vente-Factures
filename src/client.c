@@ -10,6 +10,7 @@ typedef struct
   char montant[255];
 } Ventes;
 Ventes ventesVoitures[255];
+
 int main()
 {
   int clientSocket = 0;
