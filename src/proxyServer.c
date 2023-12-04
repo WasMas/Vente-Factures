@@ -73,7 +73,7 @@ void Entr2Config()
     close(proxy_socket);
 }
 
-int clientChoice()
+int main()
 {
     int client_socket, new_socket;
     struct sockaddr_in address;
@@ -103,12 +103,6 @@ int clientChoice()
 
     close(new_socket);
     close(client_socket);
-    return choice;
-}
-
-int main()
-{
-    int choice = clientChoice();
     if (choice == 1)
     {
         Entr1Config();
