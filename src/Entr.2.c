@@ -11,7 +11,7 @@ typedef struct
 {
   int idFacture;
   int codeClient;
-  char montant[255];
+  char montant[256];
 } VentesVoitures;
 
 int main()
@@ -22,7 +22,7 @@ int main()
   sqlite3_open("../sockets.db", &db);
 
   sqlite3_stmt *statement, *statementRow = NULL;
-  VentesVoitures ventes[255];
+  VentesVoitures ventes[256];
 
   int rc, rc1, rowCount;
   char *sql = "SELECT * FROM ventesVoitures";
@@ -70,5 +70,6 @@ int main()
   send(accept_socket, ventes, sizeof(ventes), 0);
   printf("Array of structs sent\n");
   close(Entr2_socket);
+  close(accept_socket);
   return 0;
 }

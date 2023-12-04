@@ -7,9 +7,9 @@ typedef struct
 {
   int idFacture;
   int codeClient;
-  char montant[255];
+  char montant[256];
 } Ventes;
-Ventes ventesVoitures[255];
+Ventes ventesVoitures[256];
 
 int main()
 {

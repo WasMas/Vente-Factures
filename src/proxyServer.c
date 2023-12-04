@@ -12,10 +12,10 @@ typedef struct
 {
     int idFacture;
     int codeClient;
-    char montant[255];
+    char montant[256];
 } Ventes;
 Ventes ventesPara[256];
-Ventes ventesVoitures[255];
+Ventes ventesVoitures[256];
 void Entr1Config()
 {
     int proxy_socket_UDP, len;
@@ -84,7 +84,7 @@ int main()
     bind(client_socket, (struct sockaddr *)&address, sizeof(address));
 
     // Listening for incoming connections
-    listen(client_socket, 3);
+    listen(client_socket, 50);
 
     // Accepting incoming connection
     new_socket = accept(client_socket, (struct sockaddr *)&address, (socklen_t *)&addrlen);
@@ -101,9 +101,9 @@ int main()
     else
     {
         Entr2Config();
+        send(new_socket, ventesVoitures, sizeof(ventesVoitures), 0);
     }
- 
-    send(new_socket, ventesVoitures, sizeof(ventesVoitures), 0);
+
     close(new_socket);
     close(client_socket);
     printf("Struct sent to client..\n");
