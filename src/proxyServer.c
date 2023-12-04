@@ -51,7 +51,7 @@ void *Entr1Config(void *arg)
 void *Entr2Config(void *arg)
 {
     struct sockaddr_in proxy_address_tcp;
-    int proxy_socket, new_socket;
+    int proxy_socket;
 
     Ventes ventesVoitures[255];
 
@@ -59,27 +59,22 @@ void *Entr2Config(void *arg)
     proxy_address_tcp.sin_addr.s_addr = INADDR_ANY;
     proxy_address_tcp.sin_family = AF_INET;
     proxy_address_tcp.sin_port = htons(9002);
-    int addrlen = sizeof(proxy_address_tcp);
 
-    // Attaching socket to port
-    bind(proxy_socket, (struct sockaddr *)&proxy_address_tcp, sizeof(proxy_address_tcp));
-    while (1)
+    // Listening To connection
+
+    connect(proxy_socket, (struct sockaddr *)&proxy_address_tcp, sizeof(proxy_address_tcp));
+    int ok = 1;
+    send(proxy_socket, &ok, sizeof(ok), 0);
+    // Receiving the array of structs
+    recv(proxy_socket, ventesVoitures, sizeof(ventesVoitures), 0);
+    printf("Entr2 Sent Stuff:\n");
+    for (int i = 0; i < 3; ++i)
     {
-        // Listening To connection
-        listen(proxy_socket, 5);
-
-        new_socket = accept(proxy_socket, (struct sockaddr *)&proxy_address_tcp, (socklen_t *)&addrlen);
-        // Receiving the array of structs
-        recv(new_socket, ventesVoitures, sizeof(ventesVoitures), 0);
-        printf("Entr2 Sent Stuff:\n");
-        for (int i = 0; i < 3; ++i)
-        {
-            printf("id %i facture: %i, montant: %s,", ventesVoitures[i].idFacture, ventesVoitures[i].idFacture, ventesVoitures[i].montant);
-        }
-        printf("\n");
+        printf("id %i facture: %i, montant: %s,", ventesVoitures[i].idFacture, ventesVoitures[i].idFacture, ventesVoitures[i].montant);
     }
+    printf("\n");
+
     close(proxy_socket);
-    close(new_socket);
     return NULL;
 }
 

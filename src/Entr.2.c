@@ -47,7 +47,7 @@ int main()
 
   // ? Socket Stuff
   // Seding Struct To Proxy server using TCP
-  int Entr2_socket;
+  int Entr2_socket, accept_socket;
   struct sockaddr_in address;
 
   // Creating socket
@@ -57,12 +57,18 @@ int main()
   address.sin_family = AF_INET;
   address.sin_addr.s_addr = INADDR_ANY;
   address.sin_port = htons(9002);
+  int addrlen = sizeof(address);
+  bind(Entr2_socket, (struct sockaddr *)&address, sizeof(address));
+  listen(Entr2_socket, 5);
+  accept_socket = accept(Entr2_socket, (struct sockaddr *)&address, (socklen_t *)&addrlen);
 
-  connect(Entr2_socket, (struct sockaddr *)&address, sizeof(address));
+  int ok;
 
+  recv(accept_socket, &ok, sizeof(ok), 0);
+  printf("Entr.2: RECEIEVED THE OK %i, ", ok);
   // Sending the struct
-  send(Entr2_socket, ventes, sizeof(ventes), 0);
-  printf("Entr.2: Array of structs sent\n");
+  send(accept_socket, ventes, sizeof(ventes), 0);
+  printf("Array of structs sent\n");
   close(Entr2_socket);
   return 0;
 }
