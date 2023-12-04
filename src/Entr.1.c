@@ -22,7 +22,7 @@ typedef struct
 int main()
 {
 
-  FILE *csvFile = fopen("/home/wasmas/Coding/Vente Factures/Other/VentesParapharmaceutiques.csv", "r");
+  FILE *csvFile = fopen("/home/wasmas/Coding/Vente-Factures/Other/VentesParapharmaceutiques.csv", "r");
   VentesPara ventes[248];
 
   char *buf = malloc(256);
