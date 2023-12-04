@@ -3,7 +3,13 @@
 #include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-
+typedef struct
+{
+  int idFacture;
+  int codeClient;
+  char montant[255];
+} Ventes;
+Ventes ventesVoitures[255];
 int main()
 {
   int clientSocket = 0;
@@ -25,8 +31,13 @@ int main()
   send(clientSocket, &choice, sizeof(choice), 0);
 
   printf("Integer sent to server: %d\n", choice);
+  recv(clientSocket, ventesVoitures, sizeof(ventesVoitures), 0);
 
   close(clientSocket);
-
+  for (int i = 0; i < 3; ++i)
+  {
+    printf("id: %i, code client: %i, montant: %s\n", ventesVoitures[i].idFacture, ventesVoitures[i].codeClient, ventesVoitures[i].montant);
+  }
+  printf("\n");
   return 0;
 }

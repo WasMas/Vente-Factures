@@ -63,13 +63,6 @@ void Entr2Config()
     send(proxy_socket, &ok, sizeof(ok), 0);
     // Receiving the array of structs
     recv(proxy_socket, ventesVoitures, sizeof(ventesVoitures), 0);
-    printf("Entr2 Sent Stuff:\n");
-    for (int i = 0; i < 3; ++i)
-    {
-        printf("id: %i, code client: %i, montant: %s\n", ventesVoitures[i].idFacture, ventesVoitures[i].codeClient, ventesVoitures[i].montant);
-    }
-    printf("\n");
-
     close(proxy_socket);
 }
 
@@ -101,8 +94,6 @@ int main()
 
     printf("Integer received from client: %d\n", choice);
 
-    close(new_socket);
-    close(client_socket);
     if (choice == 1)
     {
         Entr1Config();
@@ -111,5 +102,10 @@ int main()
     {
         Entr2Config();
     }
+ 
+    send(new_socket, ventesVoitures, sizeof(ventesVoitures), 0);
+    close(new_socket);
+    close(client_socket);
+    printf("Struct sent to client..\n");
     return 0;
 }

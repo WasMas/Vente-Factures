@@ -1,0 +1,1 @@
+  printf("Array of structs sent\n");
