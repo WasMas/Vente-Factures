@@ -61,14 +61,16 @@ int main()
   bind(Entr2_socket, (struct sockaddr *)&address, sizeof(address));
   listen(Entr2_socket, 5);
   accept_socket = accept(Entr2_socket, (struct sockaddr *)&address, (socklen_t *)&addrlen);
-
   int ok;
 
-  recv(accept_socket, &ok, sizeof(ok), 0);
-  printf("Entr.2: RECEIEVED THE OK %i, ", ok);
-  // Sending the struct
-  send(accept_socket, ventes, sizeof(ventes), 0);
-  printf("Array of structs sent\n");
+  while (1)
+  {
+    recv(accept_socket, &ok, sizeof(ok), 0);
+    printf("Entr.2: RECEIEVED THE OK %i, ", ok);
+    // Sending the struct
+    send(accept_socket, ventes, sizeof(ventes), 0);
+    printf("Array of structs sent\n");
+  }
   close(Entr2_socket);
   close(accept_socket);
   return 0;

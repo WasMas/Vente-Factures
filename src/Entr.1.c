@@ -57,12 +57,13 @@ int main()
   address.sin_family = AF_INET;
   address.sin_port = htons(9001);
   address.sin_addr.s_addr = INADDR_ANY;
-
-  // Sending Socket
-  sendto(Entr1_socket, ventes, sizeof(ventes), MSG_CONFIRM,
-         (const struct sockaddr *)&address, sizeof(address));
-  printf("Data sent.\n");
-
+  while (1)
+  {
+    // Sending Socket
+    sendto(Entr1_socket, ventes, sizeof(ventes), MSG_CONFIRM,
+           (const struct sockaddr *)&address, sizeof(address));
+    printf("Data sent.\n");
+  }
   close(Entr1_socket);
   return 0;
 }
