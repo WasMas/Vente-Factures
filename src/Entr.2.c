@@ -87,24 +87,25 @@ int main()
     perror("Accept failed");
     exit(EXIT_FAILURE);
   }
-
   int ok;
-
-  if (recv(accept_socket, &ok, sizeof(ok), 0) == -1)
+  while (1)
   {
-    perror("Receive failed");
-    exit(EXIT_FAILURE);
-  }
-  printf("Entr.2: RECEIVED THE OK %i\n", ok);
 
-  // Sending the struct
-  if (send(accept_socket, ventes, sizeof(ventes), 0) == -1)
-  {
-    perror("Send failed");
-    exit(EXIT_FAILURE);
-  }
-  printf("Array of structs sent\n");
+    if (recv(accept_socket, &ok, sizeof(ok), 0) == -1)
+    {
+      perror("Receive failed");
+      exit(EXIT_FAILURE);
+    }
+    printf("Entr.2: RECEIVED THE OK %i\n", ok);
 
+    // Sending the struct
+    if (send(accept_socket, ventes, sizeof(ventes), 0) == -1)
+    {
+      perror("Send failed");
+      exit(EXIT_FAILURE);
+    }
+    printf("Array of structs sent\n");
+  }
   close(Entr2_socket);
   close(accept_socket);
   return 0;

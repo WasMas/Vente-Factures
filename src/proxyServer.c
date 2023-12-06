@@ -141,32 +141,34 @@ int main()
 		perror("Accept failed");
 		exit(EXIT_FAILURE);
 	}
-
-	// Receiving the integer from client
-	if (recv(new_socket, &choice, sizeof(choice), 0) == -1)
+	while (1)
 	{
-		perror("Receive failed");
-		exit(EXIT_FAILURE);
-	}
-
-	printf("Integer received from client: %d\n", choice);
-
-	if (choice == 1)
-	{
-		Entr1Config();
-		if (send(new_socket, ventesPara, sizeof(ventesPara), 0) == -1)
+		// Receiving the integer from client
+		if (recv(new_socket, &choice, sizeof(choice), 0) == -1)
 		{
-			perror("Send failed");
+			perror("Receive failed");
 			exit(EXIT_FAILURE);
 		}
-	}
-	else
-	{
-		Entr2Config();
-		if (send(new_socket, ventesVoitures, sizeof(ventesVoitures), 0) == -1)
+
+		printf("Integer received from client: %d\n", choice);
+
+		if (choice == 1)
 		{
-			perror("Send failed");
-			exit(EXIT_FAILURE);
+			Entr1Config();
+			if (send(new_socket, ventesPara, sizeof(ventesPara), 0) == -1)
+			{
+				perror("Send failed");
+				exit(EXIT_FAILURE);
+			}
+		}
+		else
+		{
+			Entr2Config();
+			if (send(new_socket, ventesVoitures, sizeof(ventesVoitures), 0) == -1)
+			{
+				perror("Send failed");
+				exit(EXIT_FAILURE);
+			}
 		}
 	}
 	close(new_socket);

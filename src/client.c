@@ -33,32 +33,33 @@ int main()
     perror("Connection failed");
     exit(EXIT_FAILURE);
   }
+  while (1)
+  {
+    do
+    {
+      printf("Choose 1 for Entr1, 2 for Entr2: ");
+      scanf("%i", &choice);
+    } while (choice != 1 && choice != 2);
+    if (send(clientSocket, &choice, sizeof(choice), 0) == -1)
+    {
+      perror("Send failed");
+      exit(EXIT_FAILURE);
+    }
 
-  do
-  {
-    printf("Choose 1 for Entr1, 2 for Entr2: ");
-    scanf("%i", &choice);
-  } while (choice != 1 && choice != 2);
-  if (send(clientSocket, &choice, sizeof(choice), 0) == -1)
-  {
-    perror("Send failed");
-    exit(EXIT_FAILURE);
+    printf("Integer sent to server: %d\n", choice);
+
+    // Assuming ventesVoitures is the array of structs to receive
+    if (recv(clientSocket, ventesVoitures, sizeof(ventesVoitures), 0) == -1)
+    {
+      perror("Receive failed");
+      exit(EXIT_FAILURE);
+    }
+    for (int i = 0; i < 3; ++i)
+    {
+      printf("id: %i, code client: %i, montant: %s\n", ventesVoitures[i].idFacture, ventesVoitures[i].codeClient, ventesVoitures[i].montant);
+    }
+    printf("\n");
   }
-
-  printf("Integer sent to server: %d\n", choice);
-
-  // Assuming ventesVoitures is the array of structs to receive
-  if (recv(clientSocket, ventesVoitures, sizeof(ventesVoitures), 0) == -1)
-  {
-    perror("Receive failed");
-    exit(EXIT_FAILURE);
-  }
-  for (int i = 0; i < 3; ++i)
-  {
-    printf("id: %i, code client: %i, montant: %s\n", ventesVoitures[i].idFacture, ventesVoitures[i].codeClient, ventesVoitures[i].montant);
-  }
-  printf("\n");
-
   close(clientSocket);
 
   return 0;

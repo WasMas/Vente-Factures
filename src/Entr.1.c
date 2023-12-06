@@ -74,24 +74,26 @@ int main()
   int receivedInt;
 
   len = sizeof(clientAddr);
-  n = recvfrom(sockfd, &receivedInt, sizeof(receivedInt), 0, (struct sockaddr *)&clientAddr, &len);
-  if (n < 0)
+  while (1)
   {
-    perror("Receive from client failed");
-    exit(EXIT_FAILURE);
+    n = recvfrom(sockfd, &receivedInt, sizeof(receivedInt), 0, (struct sockaddr *)&clientAddr, &len);
+    if (n < 0)
+    {
+      perror("Receive from client failed");
+      exit(EXIT_FAILURE);
+    }
+
+    printf("Received integer from client: %d\n", receivedInt);
+
+    n = sendto(sockfd, &ventes, sizeof(ventes), 0, (const struct sockaddr *)&clientAddr, len);
+    if (n < 0)
+    {
+      perror("Send to client failed");
+      exit(EXIT_FAILURE);
+    }
+
+    printf("Array of structs sent to client\n");
   }
-
-  printf("Received integer from client: %d\n", receivedInt);
-
-  n = sendto(sockfd, &ventes, sizeof(ventes), 0, (const struct sockaddr *)&clientAddr, len);
-  if (n < 0)
-  {
-    perror("Send to client failed");
-    exit(EXIT_FAILURE);
-  }
-
-  printf("Array of structs sent to client\n");
-
   close(sockfd);
   return 0;
 }
