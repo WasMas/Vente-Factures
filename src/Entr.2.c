@@ -81,16 +81,15 @@ int main()
     exit(EXIT_FAILURE);
   }
 
-  accept_socket = accept(Entr2_socket, (struct sockaddr *)&address, (socklen_t *)&addrlen);
-  if (accept_socket == -1)
-  {
-    perror("Accept failed");
-    exit(EXIT_FAILURE);
-  }
   int ok;
   while (1)
   {
-
+    accept_socket = accept(Entr2_socket, (struct sockaddr *)&address, (socklen_t *)&addrlen);
+    if (accept_socket == -1)
+    {
+      perror("Accept failed");
+      exit(EXIT_FAILURE);
+    }
     if (recv(accept_socket, &ok, sizeof(ok), 0) == -1)
     {
       perror("Receive failed");
