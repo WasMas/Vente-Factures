@@ -9,6 +9,7 @@ typedef struct
   int codeClient;
   char montant[256];
 } Ventes;
+
 Ventes ventesVoitures[256];
 
 int main()
