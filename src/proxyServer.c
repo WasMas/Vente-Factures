@@ -114,7 +114,12 @@ int main()
 	address.sin_family = AF_INET;
 	address.sin_addr.s_addr = INADDR_ANY;
 	address.sin_port = htons(9000);
-
+	int opt = 1;
+	if (setsockopt(client_socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1)
+	{
+		perror("Setsockopt failed");
+		exit(EXIT_FAILURE);
+	}
 	// Binding the socket to the port
 	if (bind(client_socket, (struct sockaddr *)&address, sizeof(address)) == -1)
 	{
