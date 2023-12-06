@@ -47,8 +47,8 @@ int main()
 
   // ? Socket Stuff
   // Sending Struct To Proxy server using TCP
-  int Entr2_socket, accept_socket;
-  struct sockaddr_in address;
+  int Entr2_socket, accept_socket, err, opt = 1, ok;
+  struct sockaddr_in Entr2_address;
 
   // Creating socket
   Entr2_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -59,53 +59,58 @@ int main()
   }
 
   // Configuring socket
-  address.sin_family = AF_INET;
-  address.sin_addr.s_addr = INADDR_ANY;
-  address.sin_port = htons(9002);
-  int addrlen = sizeof(address);
-  int opt = 1;
-  if (setsockopt(Entr2_socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1)
+  Entr2_address.sin_family = AF_INET;
+  Entr2_address.sin_addr.s_addr = INADDR_ANY;
+  Entr2_address.sin_port = htons(9002);
+  int Entr2_addrlen = sizeof(Entr2_address);
+
+  err = setsockopt(Entr2_socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+  if (err == -1)
   {
     perror("Setsockopt failed");
     exit(EXIT_FAILURE);
   }
-  if (bind(Entr2_socket, (struct sockaddr *)&address, sizeof(address)) == -1)
+  err = bind(Entr2_socket, (struct sockaddr *)&Entr2_address, sizeof(Entr2_address));
+  if (err == -1)
   {
-    perror("Bind failed");
+    perror("Bind with proxy failed");
     exit(EXIT_FAILURE);
   }
-
-  if (listen(Entr2_socket, 5) == -1)
+  err = listen(Entr2_socket, 5);
+  if (err == -1)
   {
     perror("Listen failed");
     exit(EXIT_FAILURE);
   }
+  printf("Entr.2 running...\n\n");
 
-  int ok;
   while (1)
   {
-    accept_socket = accept(Entr2_socket, (struct sockaddr *)&address, (socklen_t *)&addrlen);
+    accept_socket = accept(Entr2_socket, (struct sockaddr *)&Entr2_address, (socklen_t *)&Entr2_addrlen);
     if (accept_socket == -1)
     {
       perror("Accept failed");
       exit(EXIT_FAILURE);
     }
-    if (recv(accept_socket, &ok, sizeof(ok), 0) == -1)
+    err = recv(accept_socket, &ok, sizeof(ok), 0);
+    if (err == -1)
     {
-      perror("Receive failed");
+      perror("Failed to receive OK from Proxy");
       exit(EXIT_FAILURE);
     }
-    printf("Entr.2: RECEIVED THE OK %i\n", ok);
+    printf("Received OK from proxy: %i\n", ok);
 
     // Sending the struct
-    if (send(accept_socket, ventes, sizeof(ventes), 0) == -1)
+    err = send(accept_socket, ventes, sizeof(ventes), 0);
+    if (err == -1)
     {
-      perror("Send failed");
+      perror("Failed to send array of structs to Proxy");
       exit(EXIT_FAILURE);
     }
-    printf("Array of structs sent\n");
+    printf("Array of structs sent to proxy\n");
   }
   close(Entr2_socket);
   close(accept_socket);
+
   return 0;
 }

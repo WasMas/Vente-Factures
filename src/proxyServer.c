@@ -14,44 +14,42 @@ typedef struct
 	int codeClient;
 	char montant[256];
 } Ventes;
-Ventes ventesPara[256];
-Ventes ventesVoitures[256];
+Ventes ventes[256];
+int ok = 1;
 void Entr1Config()
 {
 	struct sockaddr_in serverAddr;
-	int sockfd, n;
-	int inputInt = 10; // Input integer to send to the server
+	int sockfd, err;
+	// Input integer to send to the server
 
 	sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 	if (sockfd < 0)
 	{
-		perror("Socket creation failed");
+		perror("Proxy's socket creation for Entr.2 failed");
 		exit(EXIT_FAILURE);
 	}
-
-	memset(&serverAddr, 0, sizeof(serverAddr));
 
 	serverAddr.sin_family = AF_INET;
 	serverAddr.sin_port = htons(9001);
 	serverAddr.sin_addr.s_addr = INADDR_ANY;
 
-	n = sendto(sockfd, &inputInt, sizeof(inputInt), 0, (const struct sockaddr *)&serverAddr, sizeof(serverAddr));
-	if (n < 0)
+	err = sendto(sockfd, &ok, sizeof(ok), 0, (const struct sockaddr *)&serverAddr, sizeof(serverAddr));
+	if (err < 0)
 	{
 		perror("Send to server failed");
+		perror("Failed to send OK to Entr1");
 		exit(EXIT_FAILURE);
 	}
 
-	printf("Integer sent to server: %d\n", inputInt);
-
-	n = recvfrom(sockfd, &ventesPara, sizeof(ventesPara), 0, NULL, NULL);
-	if (n < 0)
+	printf("OK sent to Entr.1: %i\n", ok);
+	err = recvfrom(sockfd, &ventes, sizeof(ventes), 0, NULL, NULL);
+	if (err < 0)
 	{
-		perror("Receive from server failed");
+		perror("failed to Receive array of structs from Entr.1");
 		exit(EXIT_FAILURE);
 	}
 
-	printf("Received array of structs from server:\n");
+	printf("Received array of structs from Entr.1 successfully\n");
 
 	close(sockfd);
 }
@@ -59,12 +57,12 @@ void Entr1Config()
 void Entr2Config()
 {
 	struct sockaddr_in proxy_address_tcp;
-	int proxy_socket;
+	int proxy_socket, err;
 
 	proxy_socket = socket(AF_INET, SOCK_STREAM, 0);
 	if (proxy_socket == -1)
 	{
-		perror("Socket creation failed");
+		perror("Proxy's socket creation for Entr.2 failed");
 		exit(EXIT_FAILURE);
 	}
 
@@ -73,41 +71,42 @@ void Entr2Config()
 	proxy_address_tcp.sin_port = htons(9002);
 
 	// Establishing connection
-	if (connect(proxy_socket, (struct sockaddr *)&proxy_address_tcp, sizeof(proxy_address_tcp)) == -1)
+	err = connect(proxy_socket, (struct sockaddr *)&proxy_address_tcp, sizeof(proxy_address_tcp));
+	if (err == -1)
 	{
-		perror("Connection failed");
+		perror("Connection with Entr.2 failed");
 		exit(EXIT_FAILURE);
 	}
 
-	int ok = 1;
-	if (send(proxy_socket, &ok, sizeof(ok), 0) == -1)
+	send(proxy_socket, &ok, sizeof(ok), 0);
+	if (err == -1)
 	{
-		perror("Send failed");
+		perror("Failed to send OK to Entr2");
 		exit(EXIT_FAILURE);
 	}
-
-	// Assuming ventesVoitures is the array of structs to receive
-	if (recv(proxy_socket, ventesVoitures, sizeof(ventesVoitures), 0) == -1)
+	printf("OK sent to Entr.2: %i\n", ok);
+	err = recv(proxy_socket, ventes, sizeof(ventes), 0);
+	if (err == -1)
 	{
-		perror("Receive failed");
+		perror("failed to Receive array of structs from Entr.2");
 		exit(EXIT_FAILURE);
 	}
-
+	printf("Received array of structs from Entr.2 successfully\n");
 	close(proxy_socket);
 }
 
 int main()
 {
-	int client_socket, new_socket;
+	int client_socket, accept_socket;
 	struct sockaddr_in address;
 	int addrlen = sizeof(address);
-	int choice;
+	int choice, err;
 
 	// Creating socket file descriptor
 	client_socket = socket(AF_INET, SOCK_STREAM, 0);
 	if (client_socket == -1)
 	{
-		perror("Socket creation failed");
+		perror("Proxy's socket creation failed");
 		exit(EXIT_FAILURE);
 	}
 
@@ -115,64 +114,71 @@ int main()
 	address.sin_addr.s_addr = INADDR_ANY;
 	address.sin_port = htons(9000);
 	int opt = 1;
-	if (setsockopt(client_socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) == -1)
+	err = setsockopt(client_socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+	if (err == -1)
 	{
 		perror("Setsockopt failed");
 		exit(EXIT_FAILURE);
 	}
 	// Binding the socket to the port
-	if (bind(client_socket, (struct sockaddr *)&address, sizeof(address)) == -1)
+	err = bind(client_socket, (struct sockaddr *)&address, sizeof(address));
+	if (err == -1)
 	{
-		perror("Bind failed");
+		perror("Bind with client failed");
 		exit(EXIT_FAILURE);
 	}
-
+	printf("Proxy running...\n\n");
 	// Listening for incoming connections
-	if (listen(client_socket, 50) == -1)
+	err = listen(client_socket, 50);
+	if (err == -1)
 	{
 		perror("Listen failed");
 		exit(EXIT_FAILURE);
 	}
 
 	// Accepting incoming connection
-	new_socket = accept(client_socket, (struct sockaddr *)&address, (socklen_t *)&addrlen);
-	if (new_socket == -1)
+	accept_socket = accept(client_socket, (struct sockaddr *)&address, (socklen_t *)&addrlen);
+	if (accept_socket == -1)
 	{
-		perror("Accept failed");
+		perror("Client socket acceptance failed");
 		exit(EXIT_FAILURE);
 	}
 	while (1)
 	{
 		// Receiving the integer from client
-		if (recv(new_socket, &choice, sizeof(choice), 0) == -1)
+		err = recv(accept_socket, &choice, sizeof(choice), 0);
+		if (err == -1)
 		{
-			perror("Receive failed");
+			perror("Failed to receive choice from client");
 			exit(EXIT_FAILURE);
 		}
 
-		printf("Integer received from client: %d\n", choice);
+		printf("Choice received from client: %d\n", choice);
 
 		if (choice == 1)
 		{
 			Entr1Config();
-			if (send(new_socket, ventesPara, sizeof(ventesPara), 0) == -1)
+			err = send(accept_socket, ventes, sizeof(ventes), 0);
+			if (err == -1)
 			{
-				perror("Send failed");
+				perror("Proxy Failed to send Entr.1 array of structs to client");
 				exit(EXIT_FAILURE);
 			}
+			printf("Entr.1 Struct sent to client..\n");
 		}
 		else
 		{
 			Entr2Config();
-			if (send(new_socket, ventesVoitures, sizeof(ventesVoitures), 0) == -1)
+			err = send(accept_socket, ventes, sizeof(ventes), 0);
+			if (err == -1)
 			{
-				perror("Send failed");
+				perror("Proxy failed to send Entr.2 array of structs to client");
 				exit(EXIT_FAILURE);
 			}
+			printf("Entr.2 Struct sent to client..\n");
 		}
 	}
-	close(new_socket);
+	close(accept_socket);
 	close(client_socket);
-	printf("Struct sent to client..\n");
 	return 0;
 }

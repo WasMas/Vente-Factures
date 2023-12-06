@@ -49,51 +49,50 @@ int main()
 
   // ? Socket Stuff
 
-  struct sockaddr_in serverAddr, clientAddr;
-  int sockfd, len, n;
+  struct sockaddr_in Entr1_addr, proxy_address;
+  int Entr1_socket, err;
 
-  sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-  if (sockfd < 0)
+  Entr1_socket = socket(AF_INET, SOCK_DGRAM, 0);
+  if (Entr1_socket < 0)
   {
     perror("Socket creation failed");
     exit(EXIT_FAILURE);
   }
 
-  serverAddr.sin_family = AF_INET;
-  serverAddr.sin_addr.s_addr = INADDR_ANY;
-  serverAddr.sin_port = htons(9001);
-
-  if (bind(sockfd, (const struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
+  Entr1_addr.sin_family = AF_INET;
+  Entr1_addr.sin_addr.s_addr = INADDR_ANY;
+  Entr1_addr.sin_port = htons(9001);
+  err = bind(Entr1_socket, (const struct sockaddr *)&Entr1_addr, sizeof(Entr1_addr));
+  if (err < 0)
   {
     perror("Bind failed");
     exit(EXIT_FAILURE);
   }
 
-  printf("Server running...\n");
+  printf("Entr.1 running...\n\n");
 
-  int receivedInt;
+  int OK;
 
-  len = sizeof(clientAddr);
+  int Entr1_addrlen = sizeof(proxy_address);
   while (1)
   {
-    n = recvfrom(sockfd, &receivedInt, sizeof(receivedInt), 0, (struct sockaddr *)&clientAddr, &len);
-    if (n < 0)
+    err = recvfrom(Entr1_socket, &OK, sizeof(OK), 0, (struct sockaddr *)&proxy_address, &Entr1_addrlen);
+    if (err < 0)
     {
-      perror("Receive from client failed");
+      perror("Failed to receive OK from Proxy");
       exit(EXIT_FAILURE);
     }
 
-    printf("Received integer from client: %d\n", receivedInt);
-
-    n = sendto(sockfd, &ventes, sizeof(ventes), 0, (const struct sockaddr *)&clientAddr, len);
-    if (n < 0)
+    printf("Received OK from proxy: %i\n", OK);
+    err = sendto(Entr1_socket, &ventes, sizeof(ventes), 0, (const struct sockaddr *)&proxy_address, Entr1_addrlen);
+    if (err < 0)
     {
-      perror("Send to client failed");
+      perror("Failed to send array of structs to Proxy");
       exit(EXIT_FAILURE);
     }
 
-    printf("Array of structs sent to client\n");
+    printf("Array of structs sent to proxy\n");
   }
-  close(sockfd);
+  close(Entr1_socket);
   return 0;
 }
