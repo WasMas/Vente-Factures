@@ -88,23 +88,22 @@ int main()
 
     // Accepting incoming connection
     new_socket = accept(client_socket, (struct sockaddr *)&address, (socklen_t *)&addrlen);
-    while (1)
+
+    // Receiving the integer from client
+    recv(new_socket, &choice, sizeof(choice), 0);
+
+    printf("Integer received from client: %d\n", choice);
+
+    if (choice == 1)
     {
-        // Receiving the integer from client
-        recv(new_socket, &choice, sizeof(choice), 0);
-
-        printf("Integer received from client: %d\n", choice);
-
-        if (choice == 1)
-        {
-            Entr1Config();
-        }
-        else
-        {
-            Entr2Config();
-            send(new_socket, ventesVoitures, sizeof(ventesVoitures), 0);
-        }
+        Entr1Config();
     }
+    else
+    {
+        Entr2Config();
+        send(new_socket, ventesVoitures, sizeof(ventesVoitures), 0);
+    }
+
     close(new_socket);
     close(client_socket);
     printf("Struct sent to client..\n");
