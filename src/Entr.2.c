@@ -46,7 +46,7 @@ int main()
   sqlite3_close(db);
 
   // ? Socket Stuff
-  // Seding Struct To Proxy server using TCP
+  // Sending Struct To Proxy server using TCP
   int Entr2_socket, accept_socket;
   struct sockaddr_in address;
 
