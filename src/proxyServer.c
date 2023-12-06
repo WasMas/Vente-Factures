@@ -18,32 +18,42 @@ Ventes ventesPara[256];
 Ventes ventesVoitures[256];
 void Entr1Config()
 {
-	int proxy_socket_UDP, len;
-	struct sockaddr_in serverAddr_UDP, clientAddr;
+	struct sockaddr_in serverAddr;
+	int sockfd, n;
+	int inputInt = 10; // Input integer to send to the server
 
-	// Creating socket
-	proxy_socket_UDP = socket(AF_INET, SOCK_DGRAM, 0);
-	serverAddr_UDP.sin_family = AF_INET;
-	serverAddr_UDP.sin_addr.s_addr = INADDR_ANY;
-	serverAddr_UDP.sin_port = htons(9001);
-
-	// Binding the socket
-	bind(proxy_socket_UDP, (const struct sockaddr *)&serverAddr_UDP, sizeof(serverAddr_UDP));
-
-	len = sizeof(clientAddr);
-	while (1)
+	sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+	if (sockfd < 0)
 	{
-		recvfrom(proxy_socket_UDP, ventesPara, sizeof(ventesPara),
-						 MSG_WAITALL, (struct sockaddr *)&clientAddr, &len);
-
-		printf("Entr1 Sent Stuff:\n");
-		// Processing received data (Here you can perform any operations with the received structures)
-		for (int i = 0; i < 3; i++)
-		{
-			printf("id: %i, code client: %i, montant: %s\n", ventesPara[i].idFacture, ventesPara[i].codeClient, ventesPara[i].montant);
-		}
+		perror("Socket creation failed");
+		exit(EXIT_FAILURE);
 	}
-	close(proxy_socket_UDP);
+
+	memset(&serverAddr, 0, sizeof(serverAddr));
+
+	serverAddr.sin_family = AF_INET;
+	serverAddr.sin_port = htons(9001);
+	serverAddr.sin_addr.s_addr = INADDR_ANY;
+
+	n = sendto(sockfd, &inputInt, sizeof(inputInt), 0, (const struct sockaddr *)&serverAddr, sizeof(serverAddr));
+	if (n < 0)
+	{
+		perror("Send to server failed");
+		exit(EXIT_FAILURE);
+	}
+
+	printf("Integer sent to server: %d\n", inputInt);
+
+	n = recvfrom(sockfd, &ventesPara, sizeof(ventesPara), 0, NULL, NULL);
+	if (n < 0)
+	{
+		perror("Receive from server failed");
+		exit(EXIT_FAILURE);
+	}
+
+	printf("Received array of structs from server:\n");
+
+	close(sockfd);
 }
 
 void Entr2Config()
@@ -97,6 +107,7 @@ int main()
 	if (choice == 1)
 	{
 		Entr1Config();
+		send(new_socket, ventesPara, sizeof(ventesPara), 0);
 	}
 	else
 	{

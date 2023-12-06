@@ -49,21 +49,49 @@ int main()
 
   // ? Socket Stuff
 
-  int Entr1_socket;
-  struct sockaddr_in address;
+  struct sockaddr_in serverAddr, clientAddr;
+  int sockfd, len, n;
 
-  // Creating socket
-  Entr1_socket = socket(AF_INET, SOCK_DGRAM, 0);
-  address.sin_family = AF_INET;
-  address.sin_port = htons(9001);
-  address.sin_addr.s_addr = INADDR_ANY;
-  while (1)
+  sockfd = socket(AF_INET, SOCK_DGRAM, 0);
+  if (sockfd < 0)
   {
-    // Sending Socket
-    sendto(Entr1_socket, ventes, sizeof(ventes), MSG_CONFIRM,
-           (const struct sockaddr *)&address, sizeof(address));
-    printf("Data sent.\n");
+    perror("Socket creation failed");
+    exit(EXIT_FAILURE);
   }
-  close(Entr1_socket);
+
+  serverAddr.sin_family = AF_INET;
+  serverAddr.sin_addr.s_addr = INADDR_ANY;
+  serverAddr.sin_port = htons(9001);
+
+  if (bind(sockfd, (const struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0)
+  {
+    perror("Bind failed");
+    exit(EXIT_FAILURE);
+  }
+
+  printf("Server running...\n");
+
+  int receivedInt;
+
+  len = sizeof(clientAddr);
+  n = recvfrom(sockfd, &receivedInt, sizeof(receivedInt), 0, (struct sockaddr *)&clientAddr, &len);
+  if (n < 0)
+  {
+    perror("Receive from client failed");
+    exit(EXIT_FAILURE);
+  }
+
+  printf("Received integer from client: %d\n", receivedInt);
+
+  n = sendto(sockfd, &ventes, sizeof(ventes), 0, (const struct sockaddr *)&clientAddr, len);
+  if (n < 0)
+  {
+    perror("Send to client failed");
+    exit(EXIT_FAILURE);
+  }
+
+  printf("Array of structs sent to client\n");
+
+  close(sockfd);
   return 0;
 }
