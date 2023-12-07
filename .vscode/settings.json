@@ -6,6 +6,7 @@
     "socket.h": "c",
     "stdlib.h": "c",
     "inet.h": "c",
-    "type_traits": "c"
+    "type_traits": "c",
+    "string.h": "c"
   }
 }
