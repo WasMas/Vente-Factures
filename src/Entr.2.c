@@ -23,7 +23,7 @@ int main()
 
   sqlite3_stmt *statement, *statementRow = NULL;
   VentesVoitures ventes[256];
-
+  memset(ventes, 0, sizeof(ventes));
   int rc, rc1, rowCount;
   char *sql = "SELECT * FROM ventesVoitures";
   char *sqlRowCount = "SELECT count(*) from ventesVoitures";

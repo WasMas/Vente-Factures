@@ -15,7 +15,7 @@ Ventes ventesVoitures[256];
 
 int main()
 {
-  int clientSocket, choice, err;
+  int clientSocket, choice, err, somme;
   struct sockaddr_in client_address;
 
   clientSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -38,9 +38,9 @@ int main()
   {
     do
     {
-      printf("Choose 1 for Entr1, 2 for Entr2: ");
+      printf("Choose 1 for Entr1, 2 for Entr2, 3 for Total: ");
       scanf("%i", &choice);
-    } while (choice != 1 && choice != 2);
+    } while (choice != 1 && choice != 2 && choice != 3);
     err = send(clientSocket, &choice, sizeof(choice), 0);
     if (err == -1)
     {
@@ -49,18 +49,33 @@ int main()
     }
 
     printf("Choice sent to Proxy: %i\n", choice);
-    err = recv(clientSocket, ventesVoitures, sizeof(ventesVoitures), 0);
-    // Assuming ventesVoitures is the array of structs to receive
-    if (err == -1)
-    {
-      perror("Receive failed");
-      exit(EXIT_FAILURE);
-    }
-    printf("Struct Received Successfully:\n");
 
-    for (int i = 0; i < 3; ++i)
+    if (choice == 3)
     {
-      printf("id: %i, code client: %i, montant: %i\n", ventesVoitures[i].idFacture, ventesVoitures[i].codeClient, ventesVoitures[i].montant);
+      somme = 0;
+      err = recv(clientSocket, &somme, sizeof(somme), 0);
+      if (err == -1)
+      {
+        perror("Receive failed");
+        exit(EXIT_FAILURE);
+      }
+      printf("Total Received Successfully: %.3f TND\n", (double)somme);
+    }
+    else
+    {
+      err = recv(clientSocket, ventesVoitures, sizeof(ventesVoitures), 0);
+      // Assuming ventesVoitures is the array of structs to receive
+      if (err == -1)
+      {
+        perror("Receive failed");
+        exit(EXIT_FAILURE);
+      }
+      printf("Struct Received Successfully:\n");
+
+      for (int i = 0; i < 3; ++i)
+      {
+        printf("id: %i, code client: %i, montant: %.3f TND\n", ventesVoitures[i].idFacture, ventesVoitures[i].codeClient, (double)ventesVoitures[i].montant);
+      }
     }
   }
   close(clientSocket);

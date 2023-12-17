@@ -24,7 +24,7 @@ int main()
 
   FILE *csvFile = fopen("/home/wasmas/Vente-Factures/Other/VentesParapharmaceutiques.csv", "r");
   VentesPara ventes[248];
-
+  memset(ventes, 0, sizeof(ventes));
   char *buf = malloc(256);
   char *tmp;
   fgets(buf, 256, csvFile) != NULL;

@@ -101,7 +101,7 @@ void Entr2Config()
 
 int main()
 {
-	int clientP_socket, accept_socket, choice, err, opt = 1;
+	int clientP_socket, accept_socket, choice, err, opt = 1, somme;
 	struct sockaddr_in clientP_address;
 	int addrlen = sizeof(clientP_address);
 
@@ -156,7 +156,7 @@ int main()
 		}
 
 		printf("Choice received from client: %d\n", choice);
-
+		memset(ventes, 0, sizeof(ventes));
 		if (choice == 1)
 		{
 			Entr1Config();
@@ -168,7 +168,7 @@ int main()
 			}
 			printf("Entr.1 Struct sent to client..\n");
 		}
-		else
+		else if (choice == 2)
 		{
 			Entr2Config();
 			err = send(accept_socket, ventes, sizeof(ventes), 0);
@@ -178,6 +178,28 @@ int main()
 				exit(EXIT_FAILURE);
 			}
 			printf("Entr.2 Struct sent to client..\n");
+		}
+		else
+		{
+			somme = 0;
+			Entr1Config();
+			for (int i = 0; i < 256; i++)
+			{
+				somme += ventes[i].montant;
+			}
+			memset(ventes, 0, sizeof(ventes));
+			Entr2Config();
+			for (int i = 0; i < 256; i++)
+			{
+				somme += ventes[i].montant;
+			}
+			err = send(accept_socket, &somme, sizeof(somme), 0);
+			if (err == -1)
+			{
+				perror("Proxy failed to send Total to client");
+				exit(EXIT_FAILURE);
+			}
+			printf("Total sent to client..\n");
 		}
 	}
 	close(accept_socket);
