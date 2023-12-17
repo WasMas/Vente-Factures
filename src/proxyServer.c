@@ -13,7 +13,7 @@ typedef struct
 {
 	int idFacture;
 	int codeClient;
-	char montant[256];
+	int montant;
 } Ventes;
 
 Ventes ventes[256];

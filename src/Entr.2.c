@@ -11,7 +11,7 @@ typedef struct
 {
   int idFacture;
   int codeClient;
-  char montant[256];
+  int montant;
 } VentesVoitures;
 
 int main()
@@ -19,7 +19,7 @@ int main()
   // ? Gettin Data From DataBase
   // Opening DataBase
   sqlite3 *db;
-  sqlite3_open("../sockets.db", &db);
+  sqlite3_open("../Other/sockets.db", &db);
 
   sqlite3_stmt *statement, *statementRow = NULL;
   VentesVoitures ventes[256];
@@ -39,7 +39,7 @@ int main()
     rc = sqlite3_step(statement);
     ventes[i].idFacture = sqlite3_column_int(statement, 0);
     ventes[i].codeClient = sqlite3_column_int(statement, 1);
-    strcpy(ventes[i].montant, sqlite3_column_text(statement, 2));
+    ventes[i].montant = sqlite3_column_int(statement, 2);
   }
 
   sqlite3_finalize(statement);

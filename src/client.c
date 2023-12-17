@@ -3,11 +3,12 @@
 #include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+
 typedef struct
 {
   int idFacture;
   int codeClient;
-  char montant[256];
+  int montant;
 } Ventes;
 
 Ventes ventesVoitures[256];
@@ -59,7 +60,7 @@ int main()
 
     for (int i = 0; i < 3; ++i)
     {
-      printf("id: %i, code client: %i, montant: %s\n", ventesVoitures[i].idFacture, ventesVoitures[i].codeClient, ventesVoitures[i].montant);
+      printf("id: %i, code client: %i, montant: %i\n", ventesVoitures[i].idFacture, ventesVoitures[i].codeClient, ventesVoitures[i].montant);
     }
   }
   close(clientSocket);

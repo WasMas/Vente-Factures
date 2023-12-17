@@ -16,7 +16,7 @@ typedef struct
 {
   int idFacture;
   int codeClient;
-  char montant[256];
+  int montant;
 } VentesPara;
 
 int main()
@@ -41,7 +41,7 @@ int main()
     ventes[i].idFacture = atoi(tmp);
 
     tmp = strtok(NULL, ",");
-    strcpy(ventes[i].montant, tmp);
+    ventes[i].montant = atoi(tmp);
 
     i++;
   }
